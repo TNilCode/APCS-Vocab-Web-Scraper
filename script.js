@@ -1,3 +1,4 @@
+// PROTOTYPE CODE, ACTUAL CODE IS COMMENTED SCROLL DOWN PAST ALL THE UNCOMMENTED CODE
 const data = `        
 \x3Cscript xmlns="http://www.standardnine.com/s9ml" type="text/xml+s9ml" title="389d86174f3c4253b8c73cb709327dc9" class="s9-definition">
 
@@ -158,6 +159,9 @@ console.log(finalTerms.join("\n"));
 console.log(finalDefinitions.join("\n"));
 
 /*
+IMPORTANT: RIGHT CLICK ON A VOCAB WORD AND CLICK INSPECT!!! 
+Then go to the tab that says "console" and then paste the code in the console.
+
 const data = document.querySelector("body > footer").innerHTML;
 const finalTerms = [];
 const finalDefinitions = [];
@@ -169,30 +173,31 @@ const scripts = rawScripts
   .map((curScript) => curScript.trim());
 
 scripts.forEach(function (curItem) {
-  const rawDefinition = curItem.split("<definition>")[1];
+  if(!curItem.includes('s9-remark')){      
+    const rawDefinition = curItem.split("<definition>")[1];
+    const term = rawDefinition.split("<title>")[1].split("</title>")[0].trim();
 
-  const term = rawDefinition.split("<title>")[1].split("</title>")[0].trim();
+    const titleDefinition = rawDefinition
+      .replaceAll("&#160;", " ")
+      .replaceAll("<i>", " ")
+      .replaceAll("</i>", " ");
 
-  const titleDefinition = rawDefinition
-    .replaceAll("&#160;", " ")
-    .replaceAll("<i>", " ")
-    .replaceAll("</i>", " ");
+    const definition = titleDefinition
+      .split("<text>")[1]
+      .split("</text>")[0]
+      .trim();
 
-  const definition = titleDefinition
-    .split("<text>")[1]
-    .split("</text>")[0]
-    .trim();
+    const finalDef = definition
+      .split("\n")
+      .filter((curScript) => curScript.trim() != "")
+      .join(" ")
+      .split(" ")
+      .filter((curScript) => curScript.trim() != "")
+      .join(" ");
 
-  const finalDef = definition
-    .split("\n")
-    .filter((curScript) => curScript.trim() != "")
-    .join(" ")
-    .split(" ")
-    .filter((curScript) => curScript.trim() != "")
-    .join(" ");
-
-  finalTerms.push(term);
-  finalDefinitions.push(finalDef);
+    finalTerms.push(term);
+    finalDefinitions.push(finalDef);
+  }
 });
 
 console.log(`Number of Vocab: ${finalTerms.length}`);
